@@ -1,0 +1,72 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(String[] enroll, String[] referral, String[] seller, int[] amount) {
+        HashMap<String, Enroll> enrollMap = new HashMap<>();
+        
+        // 해시맵 추가
+        for(String name : enroll){
+            enrollMap.put(name, new Enroll());
+        }
+        
+        // 부모 설정
+        for(int i=0; i<referral.length; i++){
+            //부모없을때 skip
+            if(referral[i].equals("-")) continue;
+            
+            String name = enroll[i];
+            String parentName = referral[i];
+            
+            //부모설정 *
+            enrollMap.get(name).setParent(enrollMap.get(parentName));
+        }
+        
+        for(int i=0; i<seller.length ; i++){
+            String name = seller[i];
+            int price = amount[i] * 100;
+            
+            enrollMap.get(name).addMoney(price);
+        }
+        int[] result = new int[enroll.length];
+        
+        for(int i=0; i<enroll.length; i++){
+            result[i] = enrollMap.get(enroll[i]).getMoney();
+        }
+        return result;
+    }
+}
+
+
+class Enroll {
+    private Enroll parent = null;
+    private int money;
+    
+    public Enroll(){
+        this.parent = null;
+        this.money = 0;
+    }
+    
+    public void setParent(Enroll p){
+        this.parent = p;
+    }
+    
+    //돈 추가시 10%는 부모에게
+    public void addMoney(int m){
+        int cost10Per = (int)(m * 0.1);
+        
+        // 90% 입금
+        this.money += m - cost10Per;
+        
+        //부모없으면 10%도 입금
+        if(parent == null) return;
+        
+        //부모 존재시 10%송금
+        parent.addMoney(cost10Per);
+        
+        
+    }
+    
+    public int getMoney(){
+        return money;
+    }
+}
