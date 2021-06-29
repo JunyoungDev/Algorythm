@@ -1,0 +1,13 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int[] nums) {
+        HashMap<Integer,Integer> map = new HashMap<>();
+        for(int num : nums) map.put(num,1);
+        
+        int maxValue = nums.length/2;
+        int keySize = map.keySet().size();
+        
+        return keySize < maxValue ? keySize : maxValue;
+    }
+}
