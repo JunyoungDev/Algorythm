@@ -1,0 +1,40 @@
+class Solution {
+    public int[] solution(int[] lottos, int[] win_nums) {
+        return getGrade(getResult(lottos, win_nums));
+    }
+    
+    //해당 번호의 최저, 최고 등수 반환
+    private int[] getResult(int[] lottos, int[] win_nums){
+        int min=0;
+        int zeroN = 0;
+        for(int lotto : lottos){
+            if(lotto == 0){
+                zeroN++;
+                continue;
+            }
+            for(int win_num : win_nums){
+                if(lotto == win_num) {
+                    min++;
+                    break;
+                }
+            }
+        }
+        
+        return new int[] {(min+zeroN > 6) ? 6 : min+zeroN, min};
+    }
+    
+    // 맞힌 수를 등수로 변환
+    private int[] getGrade(int[] s){
+        int[] score = s;
+        score[0] = 7 - score[0];
+        score[1] = 7 - score[1];
+        score[0] = score[0] > 6 ? 6 : score[0];
+        score[1] = score[1] > 6 ? 6 : score[1];
+        
+        return score;
+        
+    }
+    
+}
+
+https://programmers.co.kr/learn/courses/30/lessons/77484
