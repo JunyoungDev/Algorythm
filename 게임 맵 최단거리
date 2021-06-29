@@ -1,0 +1,64 @@
+import java.util.*;
+
+class Solution {
+    
+    boolean[][] visited;
+    public int solution(int[][] maps) {
+        int xLength = maps[0].length;
+        int yLength = maps.length;
+        visited = new boolean[yLength][xLength];
+        Queue<Point> queue = new LinkedList<>();
+        
+        queue.offer(new Point(0,0,1));
+        
+//              큐를 모두 꺼냄
+            while(queue.size() != 0){
+                Point point = queue.poll();
+//                 골인
+                if(point.isGoal(maps)) return point.count;
+//                 불가능 위치면 skip
+                if(!point.isPossible(maps)) continue;                
+//                 가능위치면 주위 블록 추가
+                queue.offer(new Point(point.x+1, point.y, point.count+1));
+                queue.offer(new Point(point.x, point.y+1, point.count+1));
+                queue.offer(new Point(point.x-1, point.y, point.count+1));
+                queue.offer(new Point(point.x, point.y-1, point.count+1));
+            }
+        return -1;
+    }
+    
+class Point {
+    public int x;
+    public int y;
+    public int count = 0;
+    public Point(int x, int y, int count){
+        this.x = x;
+        this.y = y;
+        this.count = count;
+    }
+    
+    public boolean isPossible(int[][] maps){
+        int xLength = maps[0].length;
+        int yLength = maps.length;
+        //범위
+        if(x < 0 || y < 0) return false;
+        if(x >= xLength || y >= yLength) return false;
+        //벽
+        if(maps[y][x] == 0) return false;
+        //이미 방문
+        if(visited[y][x]) return false;
+        
+        visited[y][x] = true;
+        return true;
+    }
+    
+    public boolean isGoal(int[][] maps){
+        int xLength = maps[0].length;
+        int yLength = maps.length;
+        
+        if(x == xLength-1 && y == yLength-1) return true;
+        
+        return false;
+    }
+}
+}
