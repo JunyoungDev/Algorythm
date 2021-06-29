@@ -1,0 +1,60 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(int rows, int columns, int[][] queries) {
+        int[][] board = new int[rows][columns];
+        int n = 1;
+        for(int i=0; i< rows ; i++){
+            for(int j=0; j<columns; j++){
+                board[i][j] = n++;
+            }
+        }
+        
+        int qLength = queries.length;
+        int[] answer = new int[qLength];
+        for(int i=0; i<qLength; i++){
+            answer[i] = rotate(board, queries[i]);
+        }
+        return answer;
+    }
+    
+    private int rotate(int[][] board, int[] query){
+        int y1 = query[0] - 1;
+        int x1 = query[1] - 1;
+        int y2 = query[2] - 1;
+        int x2 = query[3] - 1;
+        
+        Queue<Integer> queue = new LinkedList<>();
+        queue.offer(board[y1][x1]);
+        
+        // 상단
+        int min = board[0].length *  board.length;
+        for(int i=x1+1; i<=x2 ; i++){
+            min = min < board[y1][i] ? min : board[y1][i];
+            queue.offer(board[y1][i]);
+            board[y1][i] = queue.poll();
+        }
+        
+        //우측
+        for(int i=y1+1; i<=y2 ; i++){
+            min = min < board[i][x2] ? min : board[i][x2];
+            queue.offer(board[i][x2]);
+            board[i][x2] = queue.poll();
+        }
+        
+        //하단
+        for(int i=x2-1; i>=x1 ; i--){
+            min = min <  board[y2][i] ? min : board[y2][i];
+            queue.offer(board[y2][i]);
+            board[y2][i] = queue.poll();
+        }
+        //좌측
+        for(int i=y2-1; i>=y1 ; i--){
+            min = min < board[i][x1] ? min : board[i][x1];
+            queue.offer(board[i][x1]);
+            board[i][x1] = queue.poll();
+        }
+        
+        return min;
+    }
+}
