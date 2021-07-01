@@ -1,0 +1,21 @@
+import java.util.*;
+
+
+class Solution {
+    public int solution(int[] d, int budget) {
+        PriorityQueue<Integer> pQueue = new PriorityQueue<>();
+        for(int num : d){
+            pQueue.offer(num);
+        }
+        int answer = 0;
+        while(!pQueue.isEmpty()){
+            int num = pQueue.poll();
+            if(budget < num) return answer;
+            answer++;
+            budget -= num;
+        }
+        return answer;
+    }
+}
+
+https://programmers.co.kr/learn/courses/30/lessons/12982
