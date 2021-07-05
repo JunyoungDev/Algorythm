@@ -1,0 +1,113 @@
+import java.util.*;
+
+class Solution {
+    public String solution(int m, int n, String[] board) {
+        HashMap<Character, Tiles> map = new HashMap<>();
+        
+        for(int i=0; i<m; i++) {
+            for(int j=0; j<n; j++){
+                char tileName = board[i].charAt(j);
+                //빈칸 or 벽일 경우 skip
+                if(tileName == '.' || tileName == '*') continue;
+                // 이미 추가한 경우 두번째로 추가
+                if(map.containsKey(tileName)){
+                    Tiles tiles = map.get(tileName);
+                    tiles.x2 = j;
+                    tiles.y2 =i;
+                    tiles.name = tileName;
+                    continue;
+                }
+                //신규 추가
+                Tiles tiles = new Tiles();
+                tiles.x1 = j;
+                tiles.y1 = i;
+                tiles.name = tileName;
+                map.put(tileName, tiles);
+            }
+        }
+        
+        String answer = "";
+        
+        Object[] keys= map.keySet().toArray();
+        Arrays.sort(keys);
+        
+        boolean isChanged = true;
+        while(isChanged){
+            isChanged = false;
+            for(Object key : keys){
+                //
+                Tiles tiles = map.get((char)key);
+                //이미 제거된 타일이면 skip
+                if(tiles.isRemove) continue;
+                
+                //제거 가능하면 보드에서 타일을 빈칸으로 만들고 답 추가, break(알바벳 첨부터 다시 검색)
+                if(tiles.canRemove(board)){
+                    board[tiles.y1] = board[tiles.y1].replace(tiles.name+"", ".");
+                    board[tiles.y2] = board[tiles.y2].replace(tiles.name+"", ".");
+                    
+                    tiles.isRemove = true;
+                    isChanged = true;
+                    
+                    answer += "" + tiles.name;
+                    
+                    break;
+                }
+            }
+            //답완성시 리턴
+            if(answer.length() == keys.length) return answer;
+        }
+        return "IMPOSSIBLE";
+    } 
+    
+    class Tiles {
+        public char name;
+        public int x1;
+        public int y1;
+        public int x2;
+        public int y2;
+        //제거되었는가
+        public boolean isRemove = false;
+        
+        private boolean canRemoveXFirst(String[] board){
+            char me = name;
+            //x축부터 움직이자
+            int xDir = x2-x1>0 ? 1 : -1;
+            int yDir = y2-y1>0 ? 1 : -1;
+            for(int moveX = x1; moveX != x2 ; moveX += xDir){
+                char nowTile = board[y1].charAt(moveX);
+                if(nowTile != '.' && nowTile != me) return false;
+            }
+            
+            for(int moveY = y1; moveY != y2 ; moveY += yDir){
+                char nowTile = board[moveY].charAt(x2);
+                if(nowTile != '.' && nowTile != me) return false;
+            }
+            return true;
+        }
+        private boolean canRemoveYFirst(String[] board){
+            char me = name;
+            //y축부터 움직이자
+            int xDir = x2-x1>0 ? 1 : -1;
+            int yDir = y2-y1>0 ? 1 : -1;
+            for(int moveY = y1; moveY != y2 ; moveY += yDir){
+                char nowTile = board[moveY].charAt(x1);
+                if(nowTile != '.' && nowTile != me) return false;
+            }
+            
+            for(int moveX = x1; moveX != x2 ; moveX += xDir){
+                char nowTile = board[y2].charAt(moveX);
+                if(nowTile != '.' && nowTile != me) return false;
+            }
+            return true;
+        }
+        //현재 Board에서 제가가 가능한가?
+        public boolean canRemove(String[] board){
+            if(canRemoveXFirst(board)) return true;
+            if(canRemoveYFirst(board)) return true;
+            return false;
+        
+        }
+    }
+}
+
+https://programmers.co.kr/learn/courses/30/lessons/1836
