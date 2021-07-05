@@ -1,0 +1,55 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(String[] gems) {
+        HashMap<String, Integer> map = new HashMap<>();
+        int min = gems.length;
+        int[] answer = {1, gems.length};
+        
+        for(String gem : gems){
+            if(map.containsKey(gem)) continue;
+            map.put(gem,0);
+        }
+        int minAnswer = map.keySet().size()-1;
+        int left = 0;
+        int right = 0;
+        map.put(gems[right], map.get(gems[right])+1);
+        
+        
+        HashMap<String,Boolean> checkGems = new HashMap<>();
+        
+        checkGems.put(gems[right],false);
+        while(true){
+            if(min == minAnswer) break;
+            if(left > right) right++;
+            if(right == gems.length) break;
+            
+            
+            if(isInclude(map, checkGems)) {
+                if( min > right - left){
+                    min = right - left;
+                    answer[0] = left+1;
+                    answer[1] = right+1;
+                }
+                map.put(gems[left], map.get(gems[left])-1);
+                if(map.get(gems[left]) == 0) checkGems.remove(gems[left]);
+                left++;
+                
+            }
+            else {
+                right++;
+                if(right != gems.length){
+                     map.put(gems[right], map.get(gems[right])+1);
+                    if(map.get(gems[right]) == 1) checkGems.put(gems[right],false);
+                }
+            }
+        }
+        return answer;
+    }
+    public boolean isInclude(HashMap<String,Integer> map, HashMap<String,Boolean> checkGem){
+        if(map.keySet().size() == checkGem.keySet().size()) return true;
+        return false;
+    }
+}
+
+https://programmers.co.kr/learn/courses/30/lessons/67258
