@@ -1,0 +1,89 @@
+import java.util.*;
+
+class Solution {
+    public String solution(int n, int k, String[] cmd) {
+//         노드 배열 초기화
+        Node[] nodes = new Node[n];
+        char[] chars = new char[n];
+        for(int i=0; i<n; i++){
+            nodes[i]= new Node();
+            nodes[i].index= i;
+            chars[i] = 'O';
+        }
+//         노드 up, down 링크
+        nodes[0].downNode = nodes[1];
+        nodes[0].upNode = null;
+        nodes[n-1].downNode = null;
+        nodes[n-1].upNode = nodes[n-2];
+        
+        for(int i=1; i<n-1; i++){
+            nodes[i].upNode = nodes[i-1];
+            nodes[i].downNode = nodes[i+1]; 
+        }
+        
+//         삭제 스택
+        Stack<Node> deleteStack = new Stack<>();
+        
+//         현재 선택 노트
+        Node selectedNode = nodes[k];
+        
+//      명령어 순회
+        for(String c : cmd){
+//             삭제
+            if(c.charAt(0) == 'C'){
+                deleteStack.push(selectedNode);
+                chars[selectedNode.index] = 'X';
+                
+                if(selectedNode.upNode != null){
+                    selectedNode.upNode.downNode = selectedNode.downNode;
+                }
+                if(selectedNode.downNode != null){
+                    selectedNode.downNode.upNode = selectedNode.upNode;
+                }
+                
+                selectedNode = (selectedNode.downNode == null) 
+                    ? selectedNode.upNode
+                    : selectedNode.downNode;
+                continue;
+            }
+//             다운
+            if(c.charAt(0) =='D'){
+                int count = Integer.parseInt(c.substring(2));
+                for(int i=0; i<count ; i++){
+                    selectedNode = selectedNode.downNode;
+                }
+                continue;
+            }
+//             업
+            if(c.charAt(0) == 'U'){
+                int count = Integer.parseInt(c.substring(2));
+                for(int i=0; i<count ; i++){
+                    selectedNode = selectedNode.upNode;
+                }
+                continue;
+            }
+//             복구
+            if(c.charAt(0) == 'Z'){
+                Node zNode = deleteStack.pop();
+                chars[zNode.index] = 'O';
+                if(zNode.downNode != null) {
+                    zNode.downNode.upNode = zNode;
+                }
+                if(zNode.upNode != null) {
+                    zNode.upNode.downNode = zNode;
+                }
+                continue;
+            }
+        }
+//         삭제 값들 X로 채워넣기
+        return new String(chars);
+    }
+    
+    class Node {
+        public Node upNode;
+        public Node downNode;
+        public int index;
+    }
+}
+
+https://programmers.co.kr/learn/courses/30/lessons/81303
