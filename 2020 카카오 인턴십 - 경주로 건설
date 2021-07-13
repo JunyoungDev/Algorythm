@@ -1,0 +1,85 @@
+import java.util.*;
+
+class Solution {
+    static public int DIR_LEFT=0;
+    static public int DIR_RIGHT=1;
+    static public int DIR_UP=2;
+    static public int DIR_DOWN=3;
+    
+    int[][][] memo;
+    int[][] b;
+    public int solution(int[][] board) {
+        int n = board.length;
+        memo = new int[n][n][4];
+        Queue<CarPos> queue = new LinkedList<CarPos>();
+        
+        queue.offer(new CarPos(0,1,DIR_DOWN,100));
+        queue.offer(new CarPos(1,0,DIR_RIGHT,100));
+        while(!queue.isEmpty()){
+            CarPos car  = queue.poll();
+//             범위, 벽 체크
+            if(car.x < 0 || car.x == n) continue;
+            if(car.y < 0 || car.y == n) continue;
+            if(board[car.y][car.x] == 1) continue;
+            
+//             이미 방문한 곳이고 현재 비용이 더크거나 같다면 skip
+            if(memo[car.y][car.x][car.dir] != 0 && memo[car.y][car.x][car.dir] <= car.cost) continue;
+            
+//             첫방문 이고나 비용이 더작다면 체크
+            memo[car.y][car.x][car.dir] = car.cost;
+        
+            
+//             직선, 좌, 우 큐 삽입
+            queue.offer(car.getForwardXY());
+            queue.offer(car.getTurnLeft());
+            queue.offer(car.getTurnRight());
+        }
+        for(int i=0; i<4; i++){
+            memo[n-1][n-1][i] = memo[n-1][n-1][i] == 0 ? Integer.MAX_VALUE :memo[n-1][n-1][i] ;
+        }
+        int answer = Math.min(memo[n-1][n-1][0],memo[n-1][n-1][1]);
+        answer = Math.min(answer,memo[n-1][n-1][2]);
+        answer = Math.min(answer,memo[n-1][n-1][3]);
+        return answer;
+    }
+    
+    class CarPos{
+        public int x,y,dir,cost;
+        
+        public CarPos(int x, int y, int dir, int cost){
+            this.x=x;
+            this.y=y;
+            this.dir=dir;
+            this.cost=cost;
+        }
+        
+        public CarPos getForwardXY(){
+            if(dir==DIR_LEFT) return new CarPos(x-1,y,dir,cost+100);
+            if(dir==DIR_RIGHT) return new CarPos(x+1,y,dir,cost+100);
+            if(dir==DIR_UP) return new CarPos(x,y-1,dir,cost+100);
+            if(dir==DIR_DOWN) return new CarPos(x,y+1,dir,cost+100);
+            
+            return null;
+        }
+        
+        public CarPos getTurnLeft(){
+            if(dir==DIR_LEFT) return new CarPos(x,y+1,DIR_DOWN,cost+600);
+            if(dir==DIR_RIGHT) return new CarPos(x,y-1,DIR_UP,cost+600);
+            if(dir==DIR_UP) return new CarPos(x-1,y,DIR_LEFT,cost+600);
+            if(dir==DIR_DOWN) return new CarPos(x+1,y,DIR_RIGHT,cost+600);
+            
+            return null;
+        }
+        
+        public CarPos getTurnRight(){
+            if(dir==DIR_LEFT) return new CarPos(x,y-1,DIR_UP,cost+600);
+            if(dir==DIR_RIGHT) return new CarPos(x,y+1,DIR_DOWN,cost+600);
+            if(dir==DIR_UP) return new CarPos(x+1,y,DIR_RIGHT,cost+600);
+            if(dir==DIR_DOWN) return new CarPos(x-1,y,DIR_LEFT,cost+600);
+            
+            return null;
+        }
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/67259
