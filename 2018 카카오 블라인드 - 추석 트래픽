@@ -1,0 +1,45 @@
+import java.util.*;
+
+class Solution {
+    public int solution(String[] lines) {
+        PriorityQueue<Integer> pQ = new PriorityQueue<>(Collections.reverseOrder());
+        int answer = 0;
+        for( int i=lines.length-1; i>=0; i--){
+            String line = lines[i];
+            int now = getIntTime(line);
+            int startTime = now - getS(line)+1;
+            pQ.offer(startTime);
+//             지난것들 빼자
+            while(true){
+                if(now+999 < pQ.peek()) {
+                    System.out.println(now+1000);
+                    System.out.println(pQ.peek());
+                        System.out.println("뺌");
+                    pQ.poll();
+                    continue;
+                }
+                else {
+                    break;
+                }
+            }
+            answer = answer > pQ.size() ? answer : pQ.size();
+        }
+        return answer;
+    }
+    
+    private int getIntTime(String time){
+        String[] arr = time.split(" ")[1].split(":");
+        int result = Integer.parseInt(arr[0])*60*60*1000;
+        result += Integer.parseInt(arr[1])*60*1000;
+        result += Integer.parseInt(arr[2].replace(".",""));
+        
+        return result;
+    }
+    
+    private int getS(String time){
+        time = time.split(" ")[2].replace("s","");
+        return (int)(Double.parseDouble(time)*1000);
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/17676
