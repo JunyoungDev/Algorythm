@@ -1,0 +1,23 @@
+class Solution {
+    public long solution(int p, int m, int c) {
+        long price = p;
+        long money = m;
+        long count = c;
+        long totalPrice = 0;
+        if(count == 1){
+            totalPrice = price;
+        }
+        else if(count== 2){
+            totalPrice = price*2;
+        }
+        else if(count % 2 == 0){
+            totalPrice = (price+(price*count)) * (count/2);
+        }
+        else {
+            totalPrice = (price+(price*(count-1)))*(count/2) + count*price;
+        }
+        long result = (money - totalPrice) * -1;
+        return result <= 0 ? 0 : result;
+    }
+}
+//https://programmers.co.kr/learn/courses/30/lessons/82612?language=java
