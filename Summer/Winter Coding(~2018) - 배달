@@ -1,0 +1,64 @@
+import java.util.*;
+
+class Solution {
+    int[][] roadArr;
+    boolean[] visited;
+    int[] distance;
+    public int solution(int N, int[][] roads, int K) {    
+        roadArr = new int[N+1][N+1];
+        visited = new boolean[N+1];
+        distance = new int[N+1];
+        for(int i=1 ; i<=N; i++){
+            distance[i] = Integer.MAX_VALUE;
+        }
+        for(int[] road : roads){
+            int start = road[0];
+            int end = road[1];
+            int cost = road[2];
+            if(roadArr[start][end] == 0 || roadArr[start][end] > cost){
+                roadArr[start][end] = cost;
+                roadArr[end][start] = cost;
+                continue;
+            }
+        }
+            
+            PriorityQueue<Node> pQ = new PriorityQueue<Node>();
+            pQ.offer(new Node(1,0));
+            
+            while(!pQ.isEmpty()){
+                Node node = pQ.poll();
+                if(visited[node.index]) {
+                    continue;
+                }
+                visited[node.index] = true;
+                distance[node.index] = node.distance;
+                for(int i=1; i<=N; i++){
+                    if(roadArr[node.index][i] != 0){
+                        pQ.offer(new Node(i,node.distance+roadArr[node.index][i]));
+                    }
+                }
+            }
+            int result = 0;
+            for(int i=1; i<distance.length; i++){
+                System.out.println(i +  " : " + distance[i]);
+                if(distance[i] <= K) result++;
+            }
+        return result;
+    }
+    
+    class Node implements Comparable<Node> {
+        public int index;
+        public int distance;
+        public Node(int index, int distance){
+            this.index =index;
+            this.distance =distance;
+        }
+        @Override
+        public int compareTo(Node node){
+            if(this.distance < node.distance) return -1;
+            return 1;
+        }
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/12978
