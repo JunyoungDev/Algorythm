@@ -1,0 +1,42 @@
+class Solution {
+    static int LEFT = 0;
+    static int RIGHT = 1;
+    static int UP = 2;
+    static int DOWN = 3;
+    boolean[][][][] visited = new boolean[11][11][11][11];
+    public int solution(String dirs) {
+        int posX = 5;
+        int posY = 5;
+        int answer = 0;
+        for(int i=0; i<dirs.length(); i++){
+            char c = dirs.charAt(i);
+//             모서리일 경우 스킵
+            if(c=='U' && posY==0) continue;
+            if(c=='D' && posY==10) continue;
+            if(c=='L' && posX==0) continue;
+            if(c=='R' && posX==10) continue;
+            
+            int posX2 = posX;
+            int posY2 = posY;
+            if(c=='U') posY2--;
+            else if(c=='R') posX2++;
+            else if(c=='D') posY2++;
+            else if(c=='L') posX2--;
+            
+            
+//             처음 길이면 +1
+            if(!visited[posY][posX][posY2][posX2]){
+                answer++;
+                visited[posY][posX][posY2][posX2] = true;  
+                visited[posY2][posX2][posY][posX] = true;   
+            }
+            
+            posX = posX2;
+            posY = posY2;
+            
+        }
+        return answer;
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/49994
