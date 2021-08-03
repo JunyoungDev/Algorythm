@@ -1,0 +1,47 @@
+import java.util.*;
+class Solution {
+    public int solution(String s) {
+        if(s.length() % 2 != 0) return 0;
+        
+        int result = 0;
+        
+        String nowString = s;
+        for(int i=0; i<s.length(); i++){
+            nowString =  s.substring(i) + s.substring(0,i);
+            if(check(nowString)) result++;
+        }
+        return result;
+    }
+    
+    private boolean check(String s){
+        Stack<Character> stack = new Stack<Character>();
+        stack.push(s.charAt(0));
+        for(int i=1; i<s.length(); i++){
+            char c = s.charAt(i);
+            
+            if(c=='[' || c=='(' || c=='{'){
+                stack.push(c);
+                continue;
+            }
+            if(c==']'){
+                if(stack.isEmpty() || stack.peek() != '[') return false;
+                stack.pop();
+                continue;
+            }
+            if(c==')'){
+                if(stack.isEmpty() ||stack.peek() != '(') return false;
+                stack.pop();
+                continue;
+            }
+            if(c=='}'){
+                if(stack.isEmpty() ||stack.peek() != '{') return false;
+                stack.pop();
+                continue;
+            }
+        }
+        if(stack.isEmpty()) return true;
+        return false;
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/76502
