@@ -1,0 +1,21 @@
+import java.util.*;
+
+public class Solution {
+    int goal;
+    int minCount;
+    HashMap<Integer, Integer> memo = new HashMap<>();
+    public int solution(int n) {
+        int count = 1;
+        while(n != 1){
+            if(n % 2 == 0){
+                n /= 2;
+                continue;
+            }
+            n--;
+            count++;
+        }
+    
+        return count;
+    }
+}
+//https://programmers.co.kr/learn/courses/30/lessons/12980
