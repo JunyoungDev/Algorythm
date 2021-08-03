@@ -1,0 +1,31 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(int n, String[] words) {
+        HashMap<String,Boolean> hashMap = new HashMap<>();
+        char lastC = words[0].charAt(0);
+        
+        int index = 0;
+        for(; index<words.length; index++){
+            char c= words[index].charAt(0);
+            if(lastC != c || hashMap.containsKey(words[index])) break;
+            lastC = words[index].charAt(words[index].length()-1);
+            hashMap.put(words[index], true);
+        }
+        if(index == words.length) return new int[]{0,0};
+        index++;
+        int person;
+        if(index <= n){
+            person = index;
+        }
+        else {
+            person = index % n == 0 ? n : index%n;
+        }
+        
+        int count = index%n == 0 ? index/n :  index/n+1;
+        
+        return new int[] {person, count};
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/12981
