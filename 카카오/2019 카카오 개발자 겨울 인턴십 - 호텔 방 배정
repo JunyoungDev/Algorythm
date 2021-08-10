@@ -1,0 +1,67 @@
+import java.util.*;
+
+class Solution {
+    public long[] solution(long k, long[] room_number) {
+        HashMap<Long, Node> map = new HashMap<>();
+        long[] answer = new long[room_number.length];
+        int idx = 0;
+        for(long number : room_number){
+            Node node;
+            Queue<Node> q = new LinkedList<>();
+            //빈방인 경우
+            if(!map.containsKey(number)){
+                //이전 방이 존재하는 경우 이전방 next가 현재 노드
+                if(map.containsKey(number-1)){
+                    node = map.get(number-1).next;
+                }
+//                 이전 방 존재 안하면 새로 생성
+                else {
+                    node = new Node(number,null);
+                }
+//                 방 등록
+                map.put(number,node);
+                answer[idx++] = number;
+            }
+//             빈방이 아닌경우
+            else {
+                node = map.get(number);
+//                 젤 끝 방까지 이동(이동하는 방들은 큐에 넣음)
+                while(node.next != null){
+                    q.offer(node);
+                    node = node.next;
+                }
+//                 방 등록
+                map.put(node.index, node);
+                answer[idx++] = node.index;
+            }
+            
+//            다음노드가 존재하면 가리키자
+            if(map.containsKey(node.index+1)){
+                node.next = map.get(node.index+1);
+            }
+//                 다음 노드가 없다면 새로 생성 (맵 등록 x)
+            else {
+                node.next = new Node(node.index+1,null);
+            }
+//             큐 돌면서 node.next로 설정
+            while(!q.isEmpty()){
+                Node qNode = q.poll();
+                qNode.next = node.next;
+            }
+        }
+        return answer;
+    }
+    
+    class Node {
+        public long index;
+        public Node next;
+        
+        public Node(long n, Node node){
+            this.index = n ;
+            this.next = node;
+        }
+    }
+}
+
+
+//https://programmers.co.kr/learn/courses/30/lessons/64063
