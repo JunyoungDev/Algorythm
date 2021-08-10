@@ -1,0 +1,38 @@
+class Solution {
+    int INF = 200000001;
+    public int solution(int[] stones, int k) {
+        int left = 1;
+        int right = INF;
+        int mid = (left + right) / 2;
+        int answer = 0;
+    
+        while(left != mid && right != mid){
+            int count = 0;
+            for(int stone : stones){
+//                 못뜀
+                if(stone < mid){
+                    count++;
+                }
+//                 뜀
+                else {
+                    count=0;
+                }
+//                 못뛰는 번째면
+                if(count == k){
+                    right = mid;
+                    mid = (left+right)/2;
+                    break;
+                }
+            }
+            //못뛰어서 나온거면 넘어가고 아니면 다뛰었으니 조정
+            if(count != k){
+                answer = answer < mid ? mid : answer;
+                left = mid;
+                mid = (left+right)/2;
+            }
+        }
+        return answer;
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/64062
