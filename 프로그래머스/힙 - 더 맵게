@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int[] scoville, int K) {
+        PriorityQueue<Food> q = new PriorityQueue<>();
+        for(int s : scoville){
+            q.offer(new Food(Long.valueOf(s)));
+        }
+        int answer = 0;
+        while(q.size() != 1){
+            if(q.peek().scoville >= K) return answer;
+            
+            Food food1 = q.poll();
+            Food food2 = q.poll();
+            // System.out.println("1: " +food1.scoville);
+            // System.out.println("2: " +food2.scoville);
+            Food newFood = new Food(food1.scoville + food2.scoville*2 );
+            q.offer(newFood);
+            answer++;
+        }
+        
+        return q.peek().scoville >= K ? answer : -1;
+    }
+    
+    class Food implements Comparable<Food>{
+        public long scoville;
+        
+        public Food(long s){
+            this.scoville = s;
+        }
+        
+        @Override
+        public int compareTo(Food food){
+            if(this.scoville <= food.scoville)
+                return -1;
+            
+            return 1;
+        }
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/42626?language=java
