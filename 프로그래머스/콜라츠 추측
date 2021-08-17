@@ -1,0 +1,17 @@
+class Solution {
+    public int solution(int num) {
+        return gogo(Long.valueOf(num), 0);
+    }
+    
+    private int gogo(Long num, int count){
+        if(count == 500) return -1;
+        if(num == 1) return count;
+        
+        if(num % 2 == 0){
+            return gogo(num/2, count+1);
+        } 
+        return gogo(num*3 + 1, count+1);
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/12943
