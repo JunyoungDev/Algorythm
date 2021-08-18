@@ -1,0 +1,133 @@
+import java.util.*;
+
+class Solution {
+    public int[][] solution(int[][] nodeinfos) {
+        if(nodeinfos.length == 1){
+            return new int[][] {{1},{1}};
+        }
+        PriorityQueue<Node> searchQ = new PriorityQueue<>();
+//         노드 우선순위 큐에 넣어 탐색 순서 결정
+        for(int i=0; i<nodeinfos.length; i++){
+            int[] nodeinfo = nodeinfos[i];
+            searchQ.offer(new Node(nodeinfo[0],nodeinfo[1], i+1));
+        }
+//         배열~리스트
+        ArrayList[] nodes = new ArrayList[searchQ.peek().y+1];
+        for(int i=0; i<nodes.length; i++){
+            nodes[i] = new ArrayList<Node>();
+        }
+        
+        Node rootNode = searchQ.poll();
+        rootNode.leftArange = -1;
+        rootNode.rightArange = 100001;
+        int prevParentY = rootNode.y;
+        int prevY = searchQ.peek().y;
+        nodes[rootNode.y].add(rootNode);
+//         하나씩 꺼내서 연결
+        while(!searchQ.isEmpty()){
+            Node node = searchQ.poll();
+            nodes[node.y].add(node);
+            if(prevY != node.y){
+                prevParentY = prevY;
+            }
+            prevY = node.y;
+            //맞선임 노드 순회하며 해당하면 추가
+            for(int i=0; i<nodes[prevParentY].size(); i++){
+                Node upNode = (Node)nodes[prevParentY].get(i);
+//                 왼쪽자식 가능?
+                if(upNode.canLeft(node.x)){
+                    //서로 연결
+                    upNode.leftNode = node;
+                    node.parent = upNode;
+                    //자식 left, right 범위 설정
+                    node.leftArange = upNode.leftArange;
+                    node.rightArange = upNode.x;
+                }
+//                 오른쪽자식 가능?
+                else if(upNode.canRight(node.x)){
+                    //서로 연결
+                    upNode.rightNode = node;
+                    node.parent = upNode;
+                    //자식 left, right 범위 설정
+                    node.leftArange = upNode.x;
+                    node.rightArange = upNode.rightArange;
+                }
+            }
+            
+        }
+        for(int i=0; i<nodes.length ; i++){
+            ArrayList<Node> list = nodes[i];
+            for(Node node : list){
+                System.out.print("["+node.num+"]");
+                if(node.parent != null) System.out.print(" p["+node.parent.num+"]");
+                if(node.leftNode != null) System.out.print(" l["+node.leftNode.num+"]");
+                if(node.rightNode != null) System.out.print(" r["+node.rightNode.num+"]");
+                System.out.println("");
+            }
+        }
+        
+        ArrayList<Integer> preList = new ArrayList<>();
+        ArrayList<Integer> postList = new ArrayList<>();
+        
+        preOrder(rootNode, preList);
+        postOrder(rootNode, postList);
+        
+        int[][] answer = new int[2][preList.size()];
+        for(int i=0; i<preList.size(); i++){
+            answer[0][i]=preList.get(i);
+            answer[1][i]=postList.get(i);
+        }
+        
+        return answer;
+    }
+    
+    class Node implements Comparable<Node>{
+        public int x;
+        public int y;
+        public int num;
+        public Node parent;
+        public Node leftNode;
+        public Node rightNode;
+        public int leftArange;
+        public int rightArange;
+        
+        public Node(int x, int y, int num){
+            this.x = x;
+            this.y = y;
+            this.num = num;
+        }
+        
+        @Override
+        public int compareTo(Node node){
+            if(this.y >= node.y) return -1;
+            
+            return 1;
+        }
+        
+//         왼쪽 자식 가능?
+        public boolean canLeft(int childX){
+            if(leftArange < childX && childX < x) return true;
+            return false;
+        }
+//         오른쪽 자식 가능?
+        public boolean canRight(int childX){
+            if(x < childX && childX < rightArange) return true;
+            return false;
+        }
+    }
+    
+    public void preOrder(Node node, ArrayList<Integer> list){
+        if(node == null) return;
+        list.add(node.num);
+        preOrder(node.leftNode,list);
+        preOrder(node.rightNode,list);
+    }    
+    public void postOrder(Node node, ArrayList<Integer> list){
+        if(node == null) return;
+        postOrder(node.leftNode,list);
+        postOrder(node.rightNode,list);
+        list.add(node.num);
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/42892#
