@@ -1,0 +1,58 @@
+class Solution {
+    boolean[] banCheck;
+    boolean[] memo;
+    boolean[][] memo2;
+    public int solution(String[] user_id, String[] banned_id) {
+        banCheck = new boolean[banned_id.length];
+        memo = new boolean[256];
+        memo2 = new boolean[256][8];
+        return gogo(user_id, banned_id, 0,0,0);
+    }
+    
+    public boolean canBanId(String userId, String banId){
+        if(userId.length() != banId.length()) return false;
+        
+        for(int i=0; i<userId.length() ; i++){
+            char bC = banId.charAt(i);
+            if(bC == '*') continue;
+            
+            char uC = userId.charAt(i);
+            if(userId.charAt(i) != banId.charAt(i)) return false;
+        }
+        return true;
+    }
+    
+    public int gogo(String[] userIds, String[] banIds, int userIndex,int count, int selectUserList){
+        //완성
+        if(count == banIds.length) {
+            if(memo[selectUserList]) return 0;
+            memo[selectUserList]=true;
+            return 1;
+        }
+        //탐색 끝
+        if(userIndex == userIds.length) return 0;
+        
+        int answer = 0;
+        //탐색
+        for(int i=0; i<banIds.length; i++){
+            //이미 체크된 불랑사용자면 스킵
+            if(banCheck[i]) continue;
+            //불량사용자 가능성 발견 시
+            if(canBanId(userIds[userIndex], banIds[i])){
+                //체크한 경우
+                banCheck[i] = true;
+                answer = answer + gogo(userIds, banIds, userIndex+1, count+1, selectUserList | (1 << userIndex));
+                banCheck[i] = false;
+                //체크 안한 경우
+                answer = answer + gogo(userIds, banIds,  userIndex+1, count,selectUserList);
+            }
+            //불량사용자가 절대 아닐때
+            else {
+                answer = answer + gogo(userIds, banIds,userIndex+1, count,selectUserList);
+            }
+        }
+        return answer;
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/64064
