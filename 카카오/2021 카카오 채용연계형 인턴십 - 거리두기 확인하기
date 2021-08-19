@@ -1,0 +1,74 @@
+import java.util.*;
+class Solution {
+    char[][][] board;
+    public int[] solution(String[][] places) {
+        board= new char[5][5][5];
+        int[] answer = new int[5];
+//         String 2차 배열을 char 3차배열로
+        for(int i=0; i<5; i++){
+            for(int j=0; j<5; j++){
+                for(int z=0; z<5; z++){
+                    board[i][j][z] = places[i][j].charAt(z);
+                }
+            }
+        }
+        for(int i=0; i<5; i++){
+//             대기실마다 순회하며 거리두기 확인
+            boolean existBadBoy = false;
+            for(int j=0; j<5; j++){
+                for(int z=0; z<5; z++){
+                    if(board[i][j][z] != 'P') continue;
+                    if(findBadBoy(i,j,z)) existBadBoy = true;
+                }
+            }
+            answer[i] = existBadBoy ? 0 : 1;
+        }
+        return answer;
+    }
+     
+    // i번째 대기실이 거리두기를 지키고 있는가    (안지키면 true )            
+    private boolean findBadBoy(int i, int j, int z){
+        char[][] nowBoard = board[i];
+        Queue<Pos> q = new LinkedList<>();
+        q.offer(new Pos(j+1,z,1));
+        q.offer(new Pos(j-1,z,1));
+        q.offer(new Pos(j,z+1,1));
+        q.offer(new Pos(j,z-1,1));
+        
+        while(!q.isEmpty()){
+            Pos nowPos = q.poll();
+//         2칸 넘은
+            if(nowPos.count == 3) continue;
+//         범위 벗어남
+            if(nowPos.x < 0 || nowPos.x >= 5) continue;
+            if(nowPos.y < 0 || nowPos.y >= 5) continue;
+//         첫자리로 돌아옴
+            if(nowPos.x == z && nowPos.y == j) continue;
+//         파티션 만남
+            if(nowBoard[nowPos.y][nowPos.x] == 'X') continue;
+        
+//         사람 만나면 false 즉시리턴
+            if(nowBoard[nowPos.y][nowPos.x] == 'P') return true;
+        
+//         사방 추가
+            q.offer(new Pos(nowPos.y-1, nowPos.x, nowPos.count+1));
+            q.offer(new Pos(nowPos.y+1, nowPos.x, nowPos.count+1));
+            q.offer(new Pos(nowPos.y, nowPos.x+1, nowPos.count+1));
+            q.offer(new Pos(nowPos.y, nowPos.x-1, nowPos.count+1));
+        }
+        return false;
+    }
+                
+    class Pos {
+        public int x;
+        public int y;
+        public int count;
+        public Pos(int y, int x, int count){
+            this.x=x;
+            this.y=y;
+            this.count = count;
+        }
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/81302
