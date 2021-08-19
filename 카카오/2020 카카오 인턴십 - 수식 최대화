@@ -1,0 +1,106 @@
+import java.util.*;
+class Solution {
+    public long solution(String expression) {
+        String[] numberList = expression.split("[*+]|[-]");
+        ArrayList<Character> opList = new ArrayList<>();
+        
+        for(int i=0; i<expression.length(); i++){
+            char c = expression.charAt(i);
+            if(c == '*' || c=='+' || c=='-'){
+                opList.add(c);
+            }
+        }
+        
+        // 상수와 연산자를 하나의 리스트로
+        ArrayList<String> list1 = new ArrayList<>();
+        for(int i=0; i<numberList.length; i++){
+            list1.add(numberList[i]);
+            if(i == numberList.length-1) continue;
+            list1.add(String.valueOf(opList.get(i)));
+        }
+        ArrayList<String> list2 = (ArrayList<String>)list1.clone();
+        ArrayList<String> list3 = (ArrayList<String>)list1.clone();
+        ArrayList<String> list4 = (ArrayList<String>)list1.clone();
+        ArrayList<String> list5 = (ArrayList<String>)list1.clone();
+        ArrayList<String> list6 = (ArrayList<String>)list1.clone();
+        
+        gogo("*+-", list1);
+        gogo("*-+", list2);
+        gogo("+-*", list3);
+        gogo("+*-", list4);
+        gogo("-+*", list5);
+        gogo("-*+", list6);
+        
+        long r1 = Long.valueOf(list1.get(0).replace("-",""));
+        long r2 = Long.valueOf(list2.get(0).replace("-",""));
+        long r3 = Long.valueOf(list3.get(0).replace("-",""));
+        long r4 = Long.valueOf(list4.get(0).replace("-",""));
+        long r5 = Long.valueOf(list5.get(0).replace("-",""));
+        long r6 = Long.valueOf(list6.get(0).replace("-",""));
+        
+        long max = r1;
+        max = max < r2 ? r2 : max;
+        max = max < r3 ? r3 : max;
+        max = max < r4 ? r4 : max;
+        max = max < r5 ? r5 : max;
+        max = max < r6 ? r6 : max;
+        return max;
+    }
+    private void gogo(String seq, ArrayList<String> list){
+        for(int i=0; i<3; i++){
+            if(seq.charAt(i) == '*'){
+                mul(list); continue;
+            }
+            if(seq.charAt(i) == '-'){
+                minus(list); continue;
+            }
+            if(seq.charAt(i) == '+'){
+                plus(list); continue;
+            }
+        }
+        System.out.println(list.get(0));
+    }
+    
+    private void minus(ArrayList<String> list){
+        for(int i=0; i< list.size() ;i++){
+            if(list.get(i).equals("-")){
+                long n1 =  Long.valueOf(list.get(i-1));
+                long n2 =  Long.valueOf(list.get(i+1));
+                System.out.println(n1 + " - " + n2 + " = " +(n1-n2));
+                list.add(i-1, String.valueOf(n1-n2));
+                list.remove(i);
+                list.remove(i);
+                list.remove(i);
+                i--;
+            }
+        }
+    }
+    private void plus(ArrayList<String> list){
+        for(int i=0; i< list.size() ;i++){
+            if(list.get(i).equals("+")){
+                long n1 =  Long.valueOf(list.get(i-1));
+                long n2 =  Long.valueOf(list.get(i+1));
+                list.add(i-1, String.valueOf(n2+n1));
+                list.remove(i);
+                list.remove(i);
+                list.remove(i);
+                i--;
+            }
+        }
+    }
+    private void mul(ArrayList<String> list){
+        for(int i=0; i< list.size() ;i++){
+            if(list.get(i).equals("*")){
+                long n1 =  Long.valueOf(list.get(i-1));
+                long n2 =  Long.valueOf(list.get(i+1));
+                list.add(i-1, String.valueOf(n2*n1));
+                list.remove(i);
+                list.remove(i);
+                list.remove(i);
+                i--;
+            }
+        }
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/67257?language=java
