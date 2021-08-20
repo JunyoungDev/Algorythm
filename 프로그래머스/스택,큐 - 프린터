@@ -1,0 +1,52 @@
+import java.util.*;
+
+class Solution {
+    public int solution(int[] priorities, int location) {
+        PriorityQueue<Document> pQ = new PriorityQueue<>();
+        Queue<Document> q = new LinkedList<>();
+        for(int i=0; i<priorities.length; i++){
+            Document doc = new Document(i,priorities[i]);
+            q.offer(doc);
+            pQ.offer(doc);
+        }
+        while(true){
+            Document doc = q.poll();
+            //중요도 높은 문서가 뒤에 존재한다
+            if(pQ.peek().priority > doc.priority){
+                q.offer(doc);
+                continue;
+            }
+            //우리가 찾던 그 문서다
+            if(doc.index == location){
+                return priorities.length - q.size();
+            }
+            //우리가 찾는 문서가 아니지만 중요도 높은 문서다
+            //우선순위 중요도 하나 뺴주고 출력
+            pQ.poll();
+//             unreachable statement 방지
+            if(1==0) break;
+        }
+        int answer = 0;
+        return answer;
+    }
+    
+    class Document implements Comparable<Document>{
+        public int index;
+        public int priority;
+        
+        public Document(int i, int p){
+            index = i;
+            priority = p;
+        }
+        
+        @Override
+        public int compareTo(Document d){
+            if(this.priority < d.priority){
+                return 1;
+            }
+            return -1;
+        }
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/42587
