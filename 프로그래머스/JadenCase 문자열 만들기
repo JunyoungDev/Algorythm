@@ -1,0 +1,20 @@
+class Solution {
+    public String solution(String s) {
+        String[] arr = s.split(" ");
+        for(int i=0; i<arr.length; i++){
+            try {
+                String first = arr[i].substring(0,1);
+                String other = arr[i].substring(1);
+                arr[ i] = first.toUpperCase() + other.toLowerCase();   
+            } catch(Exception e){}
+        }
+        
+        String add = "";
+        if(s.charAt(s.length()-1) == ' '){
+            add = " ";
+        }
+        return String.join(" ", arr) + add;
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/12951
