@@ -1,0 +1,35 @@
+class Solution {
+    String[] numbers = new String[] {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"};
+    String[][] memo;
+    public String solution(int n, int t, int m, int p) {
+        String answer = "";
+        memo = new String[n+1][m*t+2];
+        for(int i=0;i<=m*t;i++){
+            answer += getNumber(i,n);
+        }
+        String result = "";
+        
+        for(int i = p; i<=t*m; i += m){
+            result += answer.charAt(i-1);
+        }
+        return result;
+    }
+    
+    private String getNumber(int n, int jin){
+        int firstN = n;
+        String result = "";
+        while(n >= jin){
+//             n숫자를 구한적이 있다면 바로 리턴
+            if(memo[jin][n] != null){
+                // System.out.println(n +" 은 구한적 있다 : " + memo[jin][n]);
+                return memo[jin][firstN] = memo[jin][n] + result;
+            }
+            result = numbers[(n%jin)] + result;
+            n /= jin;
+        }
+        return memo[jin][firstN] = numbers[n] + result;
+        
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/17687#
