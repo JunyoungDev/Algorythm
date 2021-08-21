@@ -1,0 +1,37 @@
+import java.util.*;
+
+class Solution {
+    public long solution(int n, int[] works) {
+        if(works.length == 1){
+            return (works[0]-n)*(works[0]-n);
+        }
+        PriorityQueue<Integer> pQ = new PriorityQueue<>(Collections.reverseOrder());
+        
+        for(int work : works){
+            pQ.offer(work);
+        }
+        while(n != 0 ){
+            int now = pQ.poll();
+            //0이면 0
+            if(now == 0) return 0;
+            //두번째랑 차이가 1보다 크고 n보다 작거나 같을 때
+            int di = now - pQ.peek();
+            if(1 < di && di <= n){
+                pQ.offer(now-di);
+                n -= di;
+                continue;
+            }
+                pQ.offer(now-1);
+                n -= 1;
+            
+        }
+        long sum = 0;
+        for(int w : pQ){
+            System.out.println(w);
+            sum += w*w;
+        }
+        return sum;
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/12927
