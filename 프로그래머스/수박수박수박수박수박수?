@@ -1,0 +1,19 @@
+class Solution {
+    public String solution(int n) {
+        return getAnswer(n);
+    }
+    
+    public String getAnswer(int n){
+        String result = "";
+        for(int i=0; i<n/2; i++){
+            result = result + "수박";
+        }
+        if(n % 2 != 0){
+            result = result + "수";
+        }
+        
+        return result;
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/12922
