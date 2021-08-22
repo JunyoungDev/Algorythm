@@ -1,0 +1,22 @@
+class Solution {
+    public int[] solution(int brown, int yellow) {
+        
+        
+        for(int i=yellow; 0<=i ; i--){
+            if(yellow % i != 0) continue;
+            int width = i;
+            int height = yellow/width;
+            if(getBrownCount(width,height) == brown){
+                return new int[] {width+2,height+2};
+            }
+        }
+        int[] answer = {};
+        return answer;
+    }
+    
+    public int getBrownCount(int width, int height){
+        return 4 + width*2 + height*2;
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/42842
