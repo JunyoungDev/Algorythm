@@ -1,0 +1,13 @@
+class Solution {
+    public String solution(String s) {
+        if(s.length() % 2 == 1){
+            return String.valueOf(s.charAt(s.length() / 2));
+        }
+        int i = s.length()/2;
+        
+        return String.valueOf(s.charAt(i-1))+ String.valueOf(s.charAt(i));
+        
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/12903
