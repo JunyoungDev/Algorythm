@@ -1,0 +1,44 @@
+import java.util.*;
+
+class Solution {
+    HashMap<String, Integer> map;
+    public int solution(String word) {
+        map = new HashMap<>();
+        String w = "A";
+        int count = 1;
+        while(true){
+            map.put(w,count++);
+            if(w.equals("UUUUU")) break;
+            w = getNextWord(w);
+            
+        }
+        return map.get(word);
+    }
+    
+    private String getNextWord(String w){
+        if(w.length() < 5) return w+"A";
+        char lastC = w.charAt(4);
+        if(lastC != 'U'){
+            return w.substring(0,4) + getNextChar(lastC);
+        }
+        return upgrade(w);
+    }
+    private char getNextChar(char c){
+        if(c=='A') return 'E';
+        if(c=='E') return 'I';
+        if(c=='I') return 'O';
+        if(c=='O') return 'U';
+        
+        return c;
+    }
+    private String upgrade(String word){
+        if(word.charAt(word.length()-1) == 'U')
+            return upgrade(word.substring(0,word.length()-1));
+        
+        char lastChar = word.charAt(word.length()-1);
+        lastChar = getNextChar(lastChar);
+        return word.substring(0,word.length()-1) + lastChar;
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/84512
