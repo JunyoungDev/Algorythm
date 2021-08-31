@@ -1,0 +1,33 @@
+import java.util.*;
+
+class Solution {
+    public int[] solution(int[] prices) {
+        Stack<Node> stack = new Stack<>();
+        int[] answer = new int[prices.length];
+        
+        stack.push(new Node(0,prices[0]));
+        for(int i=1; i<prices.length; i++){
+            int n = prices[i];
+            while(!stack.isEmpty() && stack.peek().price > n){
+                Node node = stack.pop();
+                answer[node.index] = i - node.index;
+            }
+            stack.push(new Node(i, n));
+        }
+        while(!stack.isEmpty()){
+                Node node = stack.pop();
+                answer[node.index] = prices.length - node.index -1;
+        }
+        return answer;
+    }
+    class Node {
+        public int index;
+        public int price;
+        public Node(int index, int price){
+            this.index = index;
+            this.price = price;
+        }
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/42584?language=java
