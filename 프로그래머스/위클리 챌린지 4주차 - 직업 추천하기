@@ -1,0 +1,42 @@
+import java.util.*;
+
+class Solution {
+    public String solution(String[] tables, String[] languages, int[] preference) {
+        HashMap<String, HashMap<String, Integer>> scoreMap = new HashMap<>();
+        
+        for(String table : tables){
+            String[] arr = table.split(" ");
+            HashMap map = new HashMap<>();
+            scoreMap.put(arr[0], map);
+            map.put(arr[1],5);
+            map.put(arr[2],4);
+            map.put(arr[3],3);
+            map.put(arr[4],2);
+            map.put(arr[5],1);
+        }
+        int maxScore = -1;
+        String answer = "";
+        
+        for(String table : tables){
+            String subject = table.split(" ")[0];
+            HashMap<String, Integer> subjectMap = scoreMap.get(subject);
+            int nowScore = 0;
+            for(int i=0; i<languages.length; i++){
+                if(subjectMap.containsKey(languages[i])){
+                    nowScore += subjectMap.get(languages[i]) * preference[i];
+                }
+            }
+            if(maxScore < nowScore){
+                maxScore = nowScore;
+                answer = subject;
+            }
+            else if(maxScore == nowScore){
+                if(subject.compareTo(answer) < 0) answer = subject;
+            }
+        }
+        
+        return answer;
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/84325
