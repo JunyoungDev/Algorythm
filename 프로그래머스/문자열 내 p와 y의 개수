@@ -1,0 +1,16 @@
+class Solution {
+    boolean solution(String s) {
+        int yCount = 0;
+        int pCount = 0;
+        
+        for(int i=0; i<s.length(); i++){
+            char c = s.charAt(i);
+            if(c=='y' || c=='Y') yCount++;
+            else if(c=='p' || c=='P') pCount++;
+        }
+        
+        return yCount == pCount;
+    }
+}
+
+//https://programmers.co.kr/learn/courses/30/lessons/12916
